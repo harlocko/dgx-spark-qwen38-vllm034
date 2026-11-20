@@ -51,6 +51,8 @@ The arguments in `scripts/serve.sh` match the inspected command line of the test
 | Checkpoint | NVIDIA NVFP4, FP8-hybrid snapshot |
 | Engram | `{"disk_offload":true}` |
 | Context limit | `500000` configured |
+| Long-context guard override | `VLLM_ALLOW_LONG_MAX_MODEL_LEN=1` |
+| Hugging Face access during serving | `HF_HUB_OFFLINE=1` |
 | Max concurrent sequences | `1` |
 | Max batched tokens | `2048` |
 | KV cache allocation | `25769803776` bytes (24 GiB) |
@@ -61,7 +63,7 @@ The arguments in `scripts/serve.sh` match the inspected command line of the test
 | Tool parser | `qwen3_coder` |
 | Reasoning parser | `qwen3` |
 
-The 500,000-token value is a serving configuration limit, not proof of an end-to-end 500,000-token retrieval test under this build. The memory settings and batch limits were selected for one request at a time.
+The 500,000-token value is a serving configuration limit, not proof of an end-to-end 500,000-token retrieval test under this build. The checkpoint declares a 262,144-token maximum, so the launcher sets `VLLM_ALLOW_LONG_MAX_MODEL_LEN=1` to allow the YaRN-based 500,000-token profile. This bypasses vLLM's length check and should not be used without the matching RoPE/YaRN configuration. The memory settings and batch limits were selected for one request at a time.
 
 ## Measured results
 
@@ -75,7 +77,7 @@ The complete comparison and test limitations are in [docs/benchmarks.md](docs/be
 
 The source files were recovered from the actual development checkout. The Docker image identifier and vLLM argument list were taken from the running, benchmarked container. The 0.34 compatibility hooks were validated on that system through V6, Gate7 and a functional runtime check.
 
-This cleaned public distribution changes image tags, paths and port-binding defaults. Its shell scripts have been checked locally, but a fresh build, fresh checkpoint conversion and full startup have **not** yet been reproduced from this package on a clean DGX Spark. The code should be treated as a release candidate until that test is completed.
+This cleaned distribution changes image tags, paths and port-binding defaults. On 20 November 2026, both images were rebuilt without Docker layer cache on the existing DGX Spark, and the compatibility modules matched the historical image by SHA256. The first launcher startup test failed because a required long-context environment variable was missing; the launcher was corrected, but an end-to-end startup and inference test of this correction is still pending. A fresh checkpoint download and conversion, and a full installation on a clean DGX Spark, have not yet been reproduced. Treat this as a release candidate until those checks are completed.
 
 Known constraints:
 
