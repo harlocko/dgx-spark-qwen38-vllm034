@@ -20,6 +20,7 @@ The image is based on an official vLLM v0.34.0 ARM64 digest. It has not been qua
 Run these commands from the repository root. They build new local images; they do not replace or stop an existing container.
 
 ```bash
+sha256sum -c SHA256SUMS
 bash scripts/build.sh
 bash scripts/download-weights.sh
 bash scripts/prepare-hybrid.sh
