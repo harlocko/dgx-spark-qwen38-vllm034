@@ -19,7 +19,7 @@ The first live launch attempt failed before loading the model because the long-c
 - End-to-end retrieval or quality at the configured 500,000-token context limit.
 - Multimodal operation or simultaneous-request performance. This profile runs text only with one concurrent sequence.
 - General compatibility with other GPU architectures or unpinned vLLM versions.
-- The recorded Gate7 agent run still has one serializer hidden-test failure. Do not describe Gate7 as fully passing.
+- Earlier Gate7 agent runs and the 20 November 2026 `medium` run have one serializer hidden-test failure; the 20 November `xhigh` run passed the same check. These single runs are documented in `docs/benchmarks.md` and do not establish a general success rate.
 
 ## Before changing repository visibility
 
