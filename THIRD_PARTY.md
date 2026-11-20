@@ -13,7 +13,7 @@ Copied and locally adjusted:
 - `scripts/download-weights.sh`
 - `scripts/prepare-hybrid.sh`
 
-These two scripts retain their original structure. Their default Docker image name was updated to the vLLM 0.34 core image in this repository. Other references to the upstream tooling may remain in the comments.
+These two scripts retain their original structure. Their default Docker image name was updated to the vLLM 0.34 core image in this repository. An outdated Xet default comment in `download-weights.sh` was also corrected. Other references to the upstream tooling may remain in the comments.
 
 The upstream repository supplied the original deployment, disk-offload and hybrid-checkpoint preparation work, including the development history leading to the local v0.32 baseline.
 
