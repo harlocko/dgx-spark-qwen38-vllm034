@@ -31,7 +31,7 @@
 #     plain HTTPS, 8 workers    14.7 MB/s   (117 Mbit/s)
 #     XET=1                    101   MB/s   (809 Mbit/s, ~86% of line rate) -- 13.4 min
 #
-# Caveat, and why it stays off by default: that run still ended in an httpx.ReadTimeout
+# Caveat: an earlier Xet run still ended in an httpx.ReadTimeout
 # after the last file finished. Every blob was complete and verified, but the exit code
 # was non-zero, so a wrapper that trusts it will think the download failed. Re-run to
 # confirm -- it is resumable and a completed download re-checks in seconds.
