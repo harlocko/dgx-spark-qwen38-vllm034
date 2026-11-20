@@ -25,6 +25,32 @@ The hidden Gate7 failure was `test_serializer_preserves_none`. A pre-existing se
 
 These runs differ in agent behavior, generated tests and number of tool calls. Gate7 generated a different number of tests in each execution. Reported wall-clock time should not be treated as an isolated CUDA Graphs effect.
 
+## Public-package rebuild: reasoning effort (20 November 2026)
+
+The public repository's vLLM 0.34 package was rebuilt without Docker layer cache and run on the same DGX Spark (GB10) using the existing, previously prepared NVIDIA FP8-hybrid checkpoint. The evaluated image was `sha256:3ccd0c34158f317b1d306f11e46d77d3c90a816b5bd56d908fd467a36564a913`, with MTP2, a configured 500,000-token YaRN limit, and `FULL_DECODE_ONLY` CUDA Graphs. These tasks did not test the full context limit.
+
+Hermes Agent `v0.21.5+7251.ge473f5a` ran on a separate host against the same OpenAI-compatible API, with model `qwen3.8-flash-next`. The two runs used identical task prompts, starting fixtures, external evaluators and Docker image. The Hermes CLI explicitly specified either `--reasoning medium` or `--reasoning xhigh`. Each level was run **once per task**, sequentially, in a fresh fixture copy.
+
+| Task | Reasoning | Agent wall time | Public/generated tests | Expanded tests (including hidden) | Hermes tool calls | Task-specific checker |
+| --- | --- | ---: | ---: | ---: | ---: | --- |
+| V6 | `medium` | 274 s | 9/9 | 24/24 | 43 | Not applicable |
+| V6 | `xhigh` | 278 s | 9/9 | 24/24 | 39 | Not applicable |
+| Gate7 | `medium` | 464 s | 22/22 | 36/37 | 36 | `FIXED_GATE7_PASS` |
+| Gate7 | `xhigh` | 1,563 s | 35/35 | 50/50 | 48 | `FIXED_GATE7_PASS` |
+
+Wall times are measured by the shell wrapper around `hermes chat`, excluding the subsequent external pytest and checker runs. Tool-call counts are reported by Hermes. Gate7's public/generated test totals differ because the agent wrote 13 tests in the `medium` run and 26 in the `xhigh` run; the same 15 external hidden tests were added to each. Therefore, **36/37 versus 50/50 is not a comparison on an identical 37-test denominator**.
+
+The shared hidden check `test_serializer_preserves_none` failed in the `medium` Gate7 run and passed in the `xhigh` Gate7 run. In the latter, the agent also fixed the pre-existing serializer so explicit `None` values were preserved, while implementing the new order-quotation feature. Both levels passed the separate `FIXED_GATE7_PASS` checker. V6 passed all 24 expanded tests under both levels.
+
+On Gate7, `xhigh` took **3.37 times** the `medium` agent wall time (1,563 s versus 464 s). V6 took 278 s versus 274 s, without a change in its external score. These observed differences combine reasoning effort, agent decisions, extra checks and tool-call patterns; no controlled token-usage or isolated reasoning-overhead measurements were captured. A single run per setting cannot establish comparative success rates or statistical significance.
+
+Task prompt SHA256 identifiers (the prompts and evaluator fixtures are not included in this repository):
+
+- V6: `8873194fed884bd7b78e1f29848ea463cf7bc89a2ed665ab22bfd383a525cd53`
+- Gate7: `ef359f09f879584480da9973832b17ae1c161ee322bb85be87abe24f3e44a860`
+
+The local execution logs and evaluator fixtures were retained outside the repository. Publishing these aggregated results does not make the agentic tasks independently reproducible without those inputs.
+
 ## Configuration differences
 
 The 0.34 profile sets one maximum sequence and a 2,048-token batch budget with a fixed 24 GiB KV cache. The local 0.32 MAPFIX configuration used higher concurrency and different memory scheduling. No like-for-like throughput test for eight simultaneous requests or 500,000-token document retrieval is included here.
