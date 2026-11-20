@@ -107,6 +107,14 @@ class LauncherChecks(unittest.TestCase):
         self.assertTrue(rope["text_config"]["rope_parameters"]["mrope_interleaved"])
         self.assertEqual(args[args.index("--engram-config") + 1], '{"disk_offload":true}')
 
+    def test_required_vllm_environment_is_forwarded(self):
+        result = self.launch()
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        args = self.capture.read_text(encoding="utf-8").splitlines()
+        env_values = [args[i + 1] for i, arg in enumerate(args[:-1]) if arg == "-e"]
+        self.assertIn("VLLM_ALLOW_LONG_MAX_MODEL_LEN=1", env_values)
+        self.assertIn("HF_HUB_OFFLINE=1", env_values)
+
     def test_existing_container_is_not_replaced(self):
         result = self.launch(exists=True)
         self.assertNotEqual(result.returncode, 0)
