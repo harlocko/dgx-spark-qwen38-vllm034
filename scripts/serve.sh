@@ -64,6 +64,8 @@ docker run -d \
     --network bridge \
     --shm-size 8g \
     --restart "$RESTART_POLICY" \
+    -e VLLM_ALLOW_LONG_MAX_MODEL_LEN=1 \
+    -e HF_HUB_OFFLINE=1 \
     --mount "type=bind,src=$HF_CACHE,dst=/hf,readonly" \
     -p "$BIND_IP:$PORT:18300" \
     --entrypoint vllm \
