@@ -28,7 +28,7 @@ The tested container mounted a local Hugging Face cache read-only and served a `
 - The public `scripts/serve.sh` was reconstructed from the inspected container command and uses a generic `/hf` mount and loopback binding. It was not part of the original running image build.
 - Older experimental v0.34 adapters (v1/v2) and v0.32 patches are not included in this release candidate. They are retained in the archived development export.
 
-A clean-system rebuild of the public package has not yet been performed. The original image ID therefore cannot be assumed to match the output of the public Docker build.
+On 20 November 2026, a build with Docker layer cache disabled succeeded on the existing DGX Spark, using the GitHub checkout. Its final image ID was `sha256:3ccd0c34158f317b1d306f11e46d77d3c90a816b5bd56d908fd467a36564a913`. The inspected compatibility modules matched the running image by SHA256. A subsequent live launch used the existing FP8-hybrid checkpoint and passed text generation, tool-call and CUDA graph checks. The original container was restored afterwards. A clean-system rebuild, including a fresh model download and FP8 conversion, has not been performed. Image IDs need not match across builds.
 
 ## SHA256 of selected original source files
 
