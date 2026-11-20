@@ -72,7 +72,9 @@ The tested v0.34 configuration reached 46.55 tokens/s in a controlled single-str
 
 On the agentic benchmarks, the decode-only graph variant completed V6 in 196 seconds with 24/24 tests passing and Gate7 in 489 seconds with one hidden contractual failure. Gate7 reproduced a known failure from earlier runs: preservation of a `None` field in an existing serializer. These are individual agent runs, so wall-clock differences are not a controlled measure of the runtime change alone.
 
-The complete comparison and test limitations are in [docs/benchmarks.md](docs/benchmarks.md). The differences from the earlier MAPFIX build are described in [docs/technical-notes.md](docs/technical-notes.md).
+In a separate 20 November 2026 evaluation of the image rebuilt from this public package, Hermes Agent v0.21.5 completed V6's 24/24 expanded tests at both `medium` (274 s) and `xhigh` (278 s) reasoning effort. Gate7's `medium` run finished in 464 s with 36/37 expanded tests passing, again missing `test_serializer_preserves_none`; the `xhigh` run finished in 1,563 s and passed 50/50, including that check. Gate7 generated different numbers of public tests in the two runs, so the expanded totals are not directly comparable, and each setting has only one trial. The separate Gate7-specific checker passed in both runs.
+
+The full measurements, task identities and limitations are in [docs/benchmarks.md](docs/benchmarks.md). The differences from the earlier MAPFIX build are described in [docs/technical-notes.md](docs/technical-notes.md).
 
 ## What has and has not been verified
 
@@ -83,7 +85,7 @@ This cleaned distribution changes image tags, paths and port-binding defaults. O
 Known constraints:
 
 - The hooks patch internal vLLM Python classes and may break with a different vLLM build. The base image digest is intentionally pinned.
-- Tool calling and agentic behavior were exercised, but Gate7 still has one hidden-test failure.
+- Tool calling and agentic behavior were exercised. Earlier Gate7 trials and the 20 November `medium` run had one serializer hidden-test failure; a separate `xhigh` run passed that check. These are single-run observations, not verified success rates.
 - Vision was not tested in this configuration.
 - Only one simultaneous request was configured. No concurrency comparison was performed against the upstream v0.33 profiles or the previous v0.32 MAPFIX setup.
 - Model weights, checkpoints and derived FP8 shards are not included. Their licenses and access conditions are separate.
