@@ -1,3 +1,14 @@
 __pycache__/
 *.py[cod]
 .pytest_cache/
+.env
+.env.*
+!.env.example
+*.log
+*.safetensors
+*.gguf
+*.pt
+*.pth
+hf-cache/
+models/
+.cache/
