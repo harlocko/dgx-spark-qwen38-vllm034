@@ -1,0 +1,13 @@
+This repository contains code adapted from the following projects:
+
+blazux/qwen3.8-Flash-DGX
+Copyright 2026 blazux
+Apache License, Version 2.0
+https://github.com/blazux/qwen3.8-Flash-DGX
+
+Saren-Arterius/qwen3.8-Flash-DGX-AutoRound
+FP8 conversion and related compatibility approach, credited in the source archive
+Apache License, Version 2.0
+https://github.com/Saren-Arterius/qwen3.8-Flash-DGX-AutoRound
+
+See THIRD_PARTY.md for the exact copied or adapted files.

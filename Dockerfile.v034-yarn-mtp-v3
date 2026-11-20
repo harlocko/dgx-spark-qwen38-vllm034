@@ -1,0 +1,11 @@
+FROM qwen38-flash-dgx:pub-v034-core
+
+LABEL local.qwen38.variant="v034-yarn-mtp-v3"
+
+COPY src/vllm_mtp_yarn_v034_v3.py \
+     /opt/qwen38-v034/vllm_mtp_yarn_v034.py
+
+COPY src/install_v034_mtp_yarn.py \
+     /opt/qwen38-v034/install_v034_mtp_yarn.py
+
+RUN python3 /opt/qwen38-v034/install_v034_mtp_yarn.py
