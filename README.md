@@ -20,11 +20,11 @@ The image is based on an official vLLM v0.34.0 ARM64 digest. It has not been qua
 Run these commands from the repository root. They build new local images; they do not replace or stop an existing container.
 
 ```bash
-scripts/build.sh
-scripts/download-weights.sh
-scripts/prepare-hybrid.sh
-scripts/serve.sh
-scripts/smoke-test.sh
+bash scripts/build.sh
+bash scripts/download-weights.sh
+bash scripts/prepare-hybrid.sh
+bash scripts/serve.sh
+bash scripts/smoke-test.sh
 ```
 
 The first model download is large. Both preparation scripts use `HF_CACHE` if you keep your Hugging Face cache outside `~/.cache/huggingface`. The hybrid preparation process converts selected BF16 tensors to blockwise FP8 and creates a sibling snapshot named `<revision>-fp8hybrid`; it leaves the downloaded original checkpoint in place.
@@ -34,7 +34,7 @@ To reuse an existing prepared hybrid snapshot, skip downloading and conversion. 
 `serve.sh` defaults to a loopback-only API at `http://127.0.0.1:18300/v1`. For access from another machine, explicitly set `BIND_IP` to the desired interface address and restrict network access independently:
 
 ```bash
-BIND_IP=192.0.2.10 RESTART_POLICY=unless-stopped scripts/serve.sh
+BIND_IP=192.0.2.10 RESTART_POLICY=unless-stopped bash scripts/serve.sh
 ```
 
 The example address is documentation-only. Use an address assigned to the server. The script refuses to replace a container of the same name and does not stop other containers using port 18300. To use a different port or container name, set `PORT` and `NAME`. **Do not run this model alongside another copy on the same 128 GB Spark**: two loaded weight sets may exhaust unified memory even if the containers use separate ports.
